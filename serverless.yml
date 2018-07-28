@@ -36,8 +36,6 @@ functions:
           path: api/monthly-winners/{id}
           method: get
 
-
-
 resources:
   Resources:
     UserTable:

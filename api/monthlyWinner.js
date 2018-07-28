@@ -34,7 +34,7 @@ module.exports.get = (event, context, callback) => {
   const getQuery = {
     TableName: table,
     Key: {
-      id: data
+      season: data
     }
   };
   dynamoDb.get(getQuery, (err, data) => {
