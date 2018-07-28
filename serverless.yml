@@ -1,15 +1,67 @@
-service: hello-serverless
+service: hello-serverless-lolo
 
 provider:
   name: aws
   runtime: nodejs8.10
   stage: dev
   region: ap-northeast-2
+  iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - dynamodb:Query
+      - dynamodb:Scan
+      - dynamodb:GetItem
+      - dynamodb:PutItem
+      - dynamodb:UpdateItem
+      - dynamodb:DeleteItem
+    Resource: "arn:aws:dynamodb:*"
 
 functions:
-  hello:
-    handler: handler.hello
+  helloGET:
+    handler: api/hello.create
     events:
       - http:
-          path: hello
-          method: get
+          path: api/hello
+          method: put
+
+
+resources:
+  Resources:
+    UserTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: "user"
+        AttributeDefinitions:
+        - AttributeName: "user_email"
+          AttributeType: "S"
+        KeySchema:
+        - AttributeName: "user_email"
+          KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 10
+          WriteCapacityUnits: 10
+    PostsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: "posts"
+        AttributeDefinitions:
+        - AttributeName: "id"
+          AttributeType: "S"
+        KeySchema:
+        - AttributeName: "id"
+          KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 10
+          WriteCapacityUnits: 10
+    MonthlyWinnerTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: "season"
+            AttributeType: "S"
+        KeySchema:
+        - AttributeName: "season"
+          KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 10
+          WriteCapacityUnits: 10
