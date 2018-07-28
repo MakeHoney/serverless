@@ -1,73 +1,15 @@
-service: "amathon-hands-on"
+service: hello-serverless
 
 provider:
   name: aws
   runtime: nodejs8.10
-  stage: ${opt:stage}
+  stage: dev
   region: ap-northeast-2
-  environment:
-    NODE_ENV: ${opt:stage}
-    ASSETS_URL: "https://s3.ap-northeast-2.amazonaws.com/amathon-hands-on-${opt:stage}"
-
-package:
-  exclude:
-    - dist/assets/**
-    - public/**
-    - src/**
-    - tests/**
-  include:
-    - dist
 
 functions:
-  renderer:
-    handler: handler.render
-    memorySize: 512
-    timeout: 5
+  hello:
+    handler: handler.hello
     events:
       - http:
-          path: /
-          method: ANY
-          cors: true
-      - http:
-          path: /{proxy+}
-          method: ANY
-          cors: true
-
-resources:
-  Resources:
-    AssetsBucket:
-      Type: AWS::S3::Bucket
-      Properties:
-        BucketName: amathon-hands-on-${opt:stage}
-    AssetsBucketPolicy:
-      Type: AWS::S3::BucketPolicy
-      Properties:
-        Bucket:
-          Ref: AssetsBucket
-        PolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            -
-              Action:
-                - s3:GetObject
-              Effect: Allow
-              Resource:
-                Fn::Join:
-                  - ""
-                  -
-                    - "arn:aws:s3:::"
-                    -
-                      Ref: AssetsBucket
-                    - "/*"
-              Principal: "*"
-
-plugins:
-  - serverless-offline
-  - serverless-s3-sync
-
-custom:
-  serverless-offline:
-    port: 4000
-  s3Sync:
-    - bucketName: amathon-hands-on-${opt:stage}
-      localDir: dist/assets
+          path: hello
+          method: get
