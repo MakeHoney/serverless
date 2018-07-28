@@ -17,12 +17,25 @@ provider:
     Resource: "arn:aws:dynamodb:*"
 
 functions:
-  helloGET:
-    handler: api/hello.create
+  userPUT:
+    handler: api/user.login
     events:
       - http:
-          path: api/hello
+          path: api/login
           method: put
+  monthlyWinnerPUT:
+    handler: api/monthlyWinner.put
+    events:
+      - http:
+          path: api/monthly-winners
+          method: put
+  monthlyWinnerGET:
+    handler: api/monthlyWinner.get
+    events:
+      - http:
+          path: api/monthly-winners/{id}
+          method: get
+
 
 
 resources:
@@ -56,6 +69,7 @@ resources:
     MonthlyWinnerTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
+        TableName: "monthlyWinner"
         AttributeDefinitions:
           - AttributeName: "season"
             AttributeType: "S"
